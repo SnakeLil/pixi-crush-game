@@ -68,7 +68,7 @@ export async function initAssets() {
     await Assets.init({ manifest: assetsManifest, basePath: 'assets' });
 
     // Load assets for the load screen
-    await loadBundles('preload');
+    // await loadBundles('preload');
 
     // List all existing bundles names
     const allBundles = assetsManifest.bundles.map((item) => item.name);
