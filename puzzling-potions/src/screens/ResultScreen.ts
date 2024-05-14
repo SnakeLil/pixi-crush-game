@@ -16,6 +16,43 @@ import { userSettings } from '../utils/userSettings';
 import { waitFor } from '../utils/asyncUtils';
 import { MaskTransition } from '../ui/MaskTransition';
 import { userStats } from '../utils/userStats';
+import { BackHomebtn } from '../ui/Result/BackHomeBtn';
+import { GoLotteryBtn } from '../ui/Result/GoLotteryBtn';
+import { PlayAgainBtn } from '../ui/Result/PlayAgainBtn';
+import { FancyButton } from '@pixi/ui';
+
+const handleBackHome = () => {
+    // 点击返回首页
+    console.log('返回首页');
+};
+const handleGoLottery = () => {
+    // 点击抽奖
+    console.log('去抽奖');
+};
+const handlePlayAgain = () => {
+    // 点击再玩一次
+    console.log('再玩一次');
+    navigation.showScreen(GameScreen);
+};
+// 判断页面是在手机端，平板端 打开
+export const isPhone = () => {
+    let is = false;
+    let userAgentInfo;
+    if (window && window.navigator) {
+        userAgentInfo = navigator?.userAgent;
+    }
+    const mobileAgents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
+    for (let i = 0; i < mobileAgents.length; i++) {
+        if (userAgentInfo && userAgentInfo.indexOf(mobileAgents[i]) !== -1) {
+            is = true;
+        }
+    }
+    const width = window.innerWidth;
+    if (width < 768) {
+        is = true;
+    }
+    return is;
+};
 
 /** APpears after gameplay ends, displaying scores and grade */
 export class ResultScreen extends Container {
@@ -38,69 +75,94 @@ export class ResultScreen extends Container {
     /** The gameplay final score in current game mode */
     private score: ResultScore;
     /** The best score in current game mode */
-    private bestScore: ResultScore;
+    private bestScore: Label;
     /** The animated stars that represent the grade */
     private stars: ResultStars;
     /** The footer base */
     private bottomBase: NineSliceSprite;
     /** Button that goes back to the game to play again */
     private continueButton: LargeButton;
+    // 结算页面返回首页按钮
+    private backHomeButton: BackHomebtn;
     /** Button that opens the settings panel */
     private settingsButton: RippleButton;
     /** A special transition that temporarely masks the entire screen */
     private maskTransition?: MaskTransition;
-
+    // 参与抽奖按钮
+    private goLotteryButton: GoLotteryBtn;
+    // 再玩一次按钮
+    private playAgainButton: PlayAgainBtn;
+    // private bg: Sprite;
     constructor() {
         super();
-
+        // this.bg = new Sprite({
+        //     texture: Texture.from('0x776464'),
+        // });
+        // this.bg.zIndex = 1;
         this.settingsButton = new RippleButton({
             image: 'icon-settings',
             ripple: 'icon-settings-stroke',
         });
         this.settingsButton.onPress.connect(() => navigation.presentPopup(SettingsPopup));
-        this.addChild(this.settingsButton);
+        // this.addChild(this.settingsButton);
 
         this.dragon = new Dragon();
         this.dragon.playTransition();
-        this.addChild(this.dragon);
+        // this.addChild(this.dragon);
 
         this.panel = new Container();
         this.addChild(this.panel);
 
         this.panelBase = Sprite.from('result-base');
         this.panelBase.anchor.set(0.5);
+        this.panelBase.width = 380;
+        this.panelBase.height = 280;
         this.panel.addChild(this.panelBase);
+
+        // 抽奖按钮
+        this.goLotteryButton = new GoLotteryBtn({
+            btnSrc: 'btn-go-lottery',
+        });
+        this.panel.addChild(this.goLotteryButton);
+
+        // 再玩一次
+        this.playAgainButton = new PlayAgainBtn();
+        this.panel.addChild(this.playAgainButton);
 
         this.title = new Label('', { fill: 0xffffff });
         this.title.y = -160;
-        this.panel.addChild(this.title);
+        // this.panel.addChild(this.title);
 
         this.mode = new Label('', { fill: 0xffffff, fontSize: 12 });
         this.mode.y = -140;
         this.mode.alpha = 0.5;
-        this.panel.addChild(this.mode);
+        // this.panel.addChild(this.mode);
 
         this.cauldron = Sprite.from('white-cauldron');
         this.cauldron.anchor.set(0.5);
         this.cauldron.y = 145;
-        this.panel.addChild(this.cauldron);
+        // this.panel.addChild(this.cauldron);
 
         this.message = new CloudLabel({ color: 0xffffff, labelColor: 0x2c136c });
         this.message.y = -95;
-        this.panel.addChild(this.message);
+        // this.panel.addChild(this.message);
 
+        // 分数
         this.score = new ResultScore();
-        this.score.y = 60;
+        this.score.y = -38;
         this.panel.addChild(this.score);
-
-        this.bestScore = new ResultScore(0xffd579);
-        this.bestScore.y = 90;
-        this.bestScore.scale.set(0.7);
-        this.panel.addChild(this.bestScore);
+        //游戏机会提示
+        const endText = '';
+        this.bestScore = new Label(endText, { fill: 0x2da1e3 });
+        // const endText = '恭喜您，获得抽奖机会*1'
+        // this.bestScore = new Label(endText, { fill: 0x2DA1E3 });
+        // this.bestScore.y = -58;
+        // this.bestScore.scale.set(0.7);
+        // this.panel.addChild(this.bestScore);
 
         this.stars = new ResultStars();
         this.stars.y = -10;
-        this.panel.addChild(this.stars);
+        // this.panel.addChild(this.stars);
 
         this.bottomBase = new NineSliceSprite({
             texture: Texture.from('rounded-rectangle'),
@@ -111,19 +173,28 @@ export class ResultScreen extends Container {
         });
         this.bottomBase.tint = 0x2c136c;
         this.bottomBase.height = 200;
-        this.addChild(this.bottomBase);
+        // this.addChild(this.bottomBase);
 
+        // 继续游戏按钮
         this.continueButton = new LargeButton({ text: i18n.resultPlay });
-        this.addChild(this.continueButton);
+        // this.addChild(this.continueButton);
         this.continueButton.onPress.connect(() => navigation.showScreen(GameScreen));
-
         this.maskTransition = new MaskTransition();
+        // 返回首页按钮
+        this.backHomeButton = new BackHomebtn({ text: '' });
+        this.addChild(this.backHomeButton);
+        this.backHomeButton.onPress.connect(handleBackHome);
+        this.goLotteryButton.onPress.connect(handleGoLottery);
+        this.playAgainButton.onPress.connect(handlePlayAgain);
     }
 
     /** Prepare the screen just before showing */
     public prepare() {
         this.bottomBase.visible = false;
         this.continueButton.visible = false;
+        this.backHomeButton.visible = false;
+        this.playAgainButton.visible = false;
+        this.goLotteryButton.visible = false;
         this.panel.visible = false;
         this.dragon.visible = false;
         this.score.visible = false;
@@ -145,10 +216,20 @@ export class ResultScreen extends Container {
         this.panel.y = height * 0.5;
         this.continueButton.x = width * 0.5;
         this.continueButton.y = height - 90;
+        this.backHomeButton.x = width * 0.5;
+        this.backHomeButton.y = height * 0.5 + 200;
+
+        this.goLotteryButton.x = -80;
+        this.goLotteryButton.y = 60;
+
+        this.playAgainButton.x = +80;
+        this.playAgainButton.y = 60;
+
         this.bottomBase.width = width;
         this.bottomBase.y = height - 100;
         this.settingsButton.x = width - 30;
         this.settingsButton.y = 30;
+       
     }
 
     /** Show screen with animations */
@@ -233,16 +314,14 @@ export class ResultScreen extends Container {
             ease: 'back.in',
         });
     }
-
-    /** Show footer items (purple base + playbutton) animated */
-    private async showBottom() {
+    // 显示按钮
+    private async showBtn(button: FancyButton) {
         this.bottomBase.visible = true;
-        this.continueButton.visible = true;
+        button.visible = true;
         gsap.killTweensOf(this.bottomBase);
-        this.bottomBase.pivot.y = -200;
-        gsap.killTweensOf(this.continueButton.pivot);
-        this.continueButton.pivot.y = -200;
-
+        // this.bottomBase.pivot.y = -200;
+        gsap.killTweensOf(button.pivot);
+        // button.pivot.y = -200;
         gsap.to(this.bottomBase.pivot, {
             y: 0,
             duration: 0.3,
@@ -250,30 +329,44 @@ export class ResultScreen extends Container {
             delay: 0.3,
         });
 
-        await gsap.to(this.continueButton.pivot, {
+        await gsap.to(button.pivot, {
             y: 0,
             duration: 0.4,
             ease: 'back.out',
             delay: 0.4,
         });
     }
-
-    /** Hide footer items (purple base + playbutton) animated */
-    private async hideBottom() {
+    // 隐藏按钮
+    private async hiddenBtn(button: FancyButton | any) {
         gsap.killTweensOf(this.bottomBase);
-        gsap.killTweensOf(this.continueButton.pivot);
+        gsap.killTweensOf(button.pivot);
 
         gsap.to(this.bottomBase.pivot, {
-            y: -200,
+            // y: -200,
             duration: 0.3,
             ease: 'back.in',
         });
 
-        await gsap.to(this.continueButton.pivot, {
-            y: -200,
+        await gsap.to(button.pivot, {
+            // y: -200,
             duration: 0.4,
             ease: 'back.in',
         });
+    }
+    /** Show footer items (purple base + playbutton) animated */
+    private async showBottom() {
+        this.showBtn(this.continueButton);
+        this.showBtn(this.backHomeButton);
+        this.showBtn(this.playAgainButton);
+        this.showBtn(this.goLotteryButton);
+    }
+
+    /** Hide footer items (purple base + playbutton) animated */
+    private async hideBottom() {
+        this.hiddenBtn(this.continueButton);
+        this.hiddenBtn(this.backHomeButton);
+        this.hiddenBtn(this.playAgainButton);
+        this.hiddenBtn(this.goLotteryButton);
     }
 
     /** Play points and best score animation */
@@ -282,15 +375,22 @@ export class ResultScreen extends Container {
         await this.score.playScore(points);
 
         if (!points) return;
-
-        const mode = userSettings.getGameMode();
-        const bestScore = userStats.loadBestScore(mode);
-
-        this.bestScore.show();
-        if (points >= bestScore) {
-            this.bestScore.setText(i18n.newBestScore);
+        // const mode = userSettings.getGameMode();
+        // const bestScore = userStats.loadBestScore(mode);
+        let endText = '';
+        // this.bestScore.show();
+        if (points < 400) {
+            endText = '很遗憾，没有获得抽奖机会';
+            this.bestScore = new Label(endText, { fill: 0x819eb5 });
+            this.bestScore.y = 0;
+            this.bestScore.scale.set(0.7);
+            this.panel.addChild(this.bestScore);
         } else {
-            this.bestScore.setText(i18n.bestScorePrefix + bestScore);
+            endText = '恭喜您，获得抽奖机会*1';
+            this.bestScore = new Label(endText, { fill: 0x2da1e3 });
+            this.bestScore.y = 0;
+            this.bestScore.scale.set(0.7);
+            this.panel.addChild(this.bestScore);
         }
     }
 

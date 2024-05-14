@@ -1,19 +1,17 @@
 import '@pixi/spine-pixi';
-
 import { Application } from 'pixi.js';
 import { initAssets } from './utils/assets';
 import { navigation } from './utils/navigation';
 import { GameScreen } from './screens/GameScreen';
-import { HomeScreen } from './screens/HomeScreen';
 import { LoadScreen } from './screens/LoadScreen';
 import { ResultScreen } from './screens/ResultScreen';
-import { TiledBackground } from './ui/TiledBackground';
 import { getUrlParam } from './utils/getUrlParams';
 import { sound } from '@pixi/sound';
 
 /** The PixiJS app Application instance, shared across the project */
 export const app = new Application();
-
+//@ts-check
+globalThis.__PIXI_APP__ = app;
 /** Set up a resize function for the app */
 function resize() {
     const windowWidth = window.innerWidth;
@@ -73,7 +71,7 @@ async function init() {
     await initAssets();
 
     // Add a persisting background shared by all screens
-    navigation.setBackground(TiledBackground);
+    // navigation.setBackground(TiledBackground);
 
     // Show initial loading screen
     await navigation.showScreen(LoadScreen);
@@ -86,7 +84,7 @@ async function init() {
     } else if (getUrlParam('result') !== null) {
         await navigation.showScreen(ResultScreen);
     } else {
-        await navigation.showScreen(HomeScreen);
+        await navigation.showScreen(GameScreen);
     }
 }
 

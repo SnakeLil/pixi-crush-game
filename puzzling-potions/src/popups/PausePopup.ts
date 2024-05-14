@@ -5,6 +5,7 @@ import { RoundedBox } from '../ui/RoundedBox';
 import { i18n } from '../utils/i18n';
 import gsap from 'gsap';
 import { navigation } from '../utils/navigation';
+import { GoLotteryBtn } from '../ui/Result/GoLotteryBtn';
 
 /** Popup that shows up when gameplay is paused */
 export class PausePopup extends Container {
@@ -15,9 +16,10 @@ export class PausePopup extends Container {
     /** The popup title label */
     private title: Label;
     /** Button that closes the popup */
-    private doneButton: LargeButton;
+    private doneButton: GoLotteryBtn;
     /** The panel background */
     private panelBase: RoundedBox;
+    private goLottertButton: GoLotteryBtn;
 
     constructor() {
         super();
@@ -33,11 +35,13 @@ export class PausePopup extends Container {
         this.panelBase = new RoundedBox({ height: 300 });
         this.panel.addChild(this.panelBase);
 
-        this.title = new Label(i18n.pauseTitle, { fill: 0xffd579, fontSize: 50 });
+        this.title = new Label(i18n.pauseTitle, { fill: 0xffffff, fontSize: 50 });
         this.title.y = -80;
-        this.panel.addChild(this.title);
+        // this.panel.addChild(this.title);
 
-        this.doneButton = new LargeButton({ text: i18n.pauseDone });
+        this.doneButton = new GoLotteryBtn({
+            btnSrc:'btn-continue-game'
+        });
         this.doneButton.y = 70;
         this.doneButton.onPress.connect(() => navigation.dismissPopup());
         this.panel.addChild(this.doneButton);

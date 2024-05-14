@@ -36,7 +36,7 @@ export class CloudLabel extends Container {
             height: 10,
             circleSize: 30,
         });
-        this.container.addChild(this.cloud);
+        // this.container.addChild(this.cloud);
 
         this.messageLabel = new Label('', {
             fill: opts.labelColor,

@@ -1,11 +1,11 @@
 import { Container, NineSliceSprite, Texture } from 'pixi.js';
 
 const defaultRoundedBoxOptions = {
-    color: 0x2c136c,
+    // color: 0x2c136c,
     width: 350,
     height: 600,
     shadow: true,
-    shadowColor: 0x0a0025,
+    // shadowColor: 0x0a0025,
     shadowOffset: 22,
 };
 
@@ -24,34 +24,33 @@ export class RoundedBox extends Container {
         super();
         const opts = { ...defaultRoundedBoxOptions, ...options };
         this.image = new NineSliceSprite({
-            texture: Texture.from('rounded-rectangle'),
-            leftWidth: 34,
-            topHeight: 34,
-            rightWidth: 34,
-            bottomHeight: 34,
+            texture: Texture.from('pause-bg'),
+            leftWidth: 0,
+            topHeight: 0,
+            rightWidth: 0,
+            bottomHeight: 0,
             width: opts.width,
             height: opts.height,
-            tint: opts.color,
+            // tint: opts.color,
         });
         this.image.x = -this.image.width * 0.5;
         this.image.y = -this.image.height * 0.5;
         this.addChild(this.image);
 
-        if (opts.shadow) {
-            this.shadow = new NineSliceSprite({
-                texture: Texture.from('rounded-rectangle'),
-                leftWidth: 34,
-                topHeight: 34,
-                rightWidth: 34,
-                bottomHeight: 34,
-                width: opts.width,
-                height: opts.height,
-                tint: opts.shadowColor,
-            });
-            this.shadow.x = -this.shadow.width * 0.5;
-            this.shadow.y = -this.shadow.height * 0.5 + opts.shadowOffset;
-            this.addChildAt(this.shadow, 0);
-        }
+        // if (opts.shadow) {
+        //     this.shadow = new NineSliceSprite({
+        //         texture: Texture.from('pause-bg'),
+        //         leftWidth: 0,
+        //         topHeight: 0,
+        //         rightWidth: 0,
+        //         bottomHeight: 20,
+        //         width: opts.width,
+        //         height: opts.height,
+        //     });
+        //     this.shadow.x = -this.shadow.width * 0.5;
+        //     this.shadow.y = -this.shadow.height * 0.5 + opts.shadowOffset;
+        //     this.addChildAt(this.shadow, 0);
+        // }
     }
 
     /** Get the base width, without counting the shadow */

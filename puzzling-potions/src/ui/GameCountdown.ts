@@ -36,7 +36,7 @@ export class GameCountdown extends Container {
             height: 70,
             circleSize: 100,
         });
-        this.container.addChild(this.cloud);
+        // this.container.addChild(this.cloud);
 
         this.messageLabel = new Label('', {
             fill: 0xffffff,

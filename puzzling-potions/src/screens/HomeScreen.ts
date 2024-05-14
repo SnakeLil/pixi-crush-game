@@ -14,6 +14,7 @@ import { RippleButton } from '../ui/RippleButton';
 import { InfoPopup } from '../popups/InfoPopup';
 import { SettingsPopup } from '../popups/SettingsPopup';
 import { bgm } from '../utils/audio';
+import { isPhone } from './ResultScreen';
 
 /** Custom ease curve for y animation of the base to reveal the screen */
 const easeSoftBackOut = registerCustomEase(
@@ -85,6 +86,9 @@ export class HomeScreen extends Container {
 
         this.playButton = new LargeButton({ text: i18n.playButton });
         this.playButton.onPress.connect(() => navigation.showScreen(GameScreen));
+        // if(isPhone()) {
+        //     this.playButton.onDown.connect(() => navigation.showScreen(GameScreen));
+        // }
         this.addChild(this.playButton);
     }
 

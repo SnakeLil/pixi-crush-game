@@ -13,7 +13,7 @@ export class ResultScore extends Container {
     /** The score message displayed */
     private messageLabel: Label;
 
-    constructor(fill = 0xffffff) {
+    constructor(fill = 0x385165) {
         super();
         this.messageLabel = new Label('', { fill });
         this.addChild(this.messageLabel);
@@ -25,10 +25,10 @@ export class ResultScore extends Container {
         this.visible = true;
         if (animated) {
             this.messageLabel.scale.set(0);
-            this.messageLabel.text = 0 + i18n.pointsSuffix;
+            this.messageLabel.text = i18n.pointsSuffix + 0;
             await gsap.to(this.messageLabel.scale, { x: 1, y: 1, duration: 0.3, ease: 'back.out' });
         } else {
-            this.messageLabel.text = 0 + i18n.pointsSuffix;
+            this.messageLabel.text =i18n.pointsSuffix + 0;
             this.messageLabel.scale.set(1);
         }
     }
@@ -45,7 +45,7 @@ export class ResultScore extends Container {
 
     /** Play score animation, increasing it gradually */
     public async playScore(points: number) {
-        this.messageLabel.text = 0 + i18n.pointsSuffix;
+        this.messageLabel.text = i18n.pointsSuffix + 0;
         if (points === 0) return;
         const score = { points: 0 };
         await gsap.to(score, {
@@ -55,7 +55,7 @@ export class ResultScore extends Container {
             onUpdate: () => {
                 const partial = Math.round(score.points);
                 const speed = 0.9 + Math.min(1, partial * 0.0005);
-                this.setText(partial + i18n.pointsSuffix, speed);
+                this.setText( i18n.pointsSuffix + partial , speed);
             },
         });
     }

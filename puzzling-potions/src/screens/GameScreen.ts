@@ -1,4 +1,4 @@
-import { Container, Ticker } from 'pixi.js';
+import { Assets, Container, Sprite, Texture, Ticker } from 'pixi.js';
 import gsap from 'gsap';
 import { Match3, Match3OnMatchData, Match3OnMoveData, Match3OnPopData } from '../match3/Match3';
 import { Shelf } from '../ui/Shelf';
@@ -22,6 +22,7 @@ import { GameOvertime } from '../ui/GameOvertime';
 import { waitFor } from '../utils/asyncUtils';
 import { match3GetConfig, Match3Mode } from '../match3/Match3Config';
 import { userStats } from '../utils/userStats';
+import { Label } from '../ui/Label';
 
 /** The screen tha holds the Match3 game */
 export class GameScreen extends Container {
@@ -57,9 +58,29 @@ export class GameScreen extends Container {
     public readonly vfx?: GameEffects;
     /** Set to true when gameplay is finished */
     private finished = false;
-
+    private bg: Sprite;
+    private timeText: Label;
+    private scoreText: Label;
     constructor() {
         super();
+        this.timeText = new Label('倒计时', {
+            fontSize: 16,
+            fill: 0xffffff,
+        });
+        this.timeText.zIndex = 1
+        this.addChild(this.timeText);
+        this.scoreText = new Label('当前得分', {
+            fontSize: 16,
+            fill: 0xffffff,
+        });
+        this.scoreText.zIndex = 1
+        this.addChild(this.scoreText);
+        this.bg = new Sprite({
+            texture: Texture.from('game-bg'),
+        });
+        // this.bg.tint = 0x000000;
+        this.bg.interactive = true;
+        this.addChild(this.bg);
 
         this.pauseButton = new RippleButton({
             image: 'icon-pause',
@@ -73,7 +94,7 @@ export class GameScreen extends Container {
             ripple: 'icon-settings-stroke',
         });
         this.settingsButton.onPress.connect(() => navigation.presentPopup(SettingsPopup));
-        this.addChild(this.settingsButton);
+        // this.addChild(this.settingsButton);
 
         this.gameContainer = new Container();
         this.addChild(this.gameContainer);
@@ -103,10 +124,10 @@ export class GameScreen extends Container {
         this.addChild(this.comboLevel);
 
         this.cauldron = new Cauldron(true);
-        this.addChild(this.cauldron);
+        // this.addChild(this.cauldron);
 
         this.timer = new GameTimer();
-        this.cauldron.addContent(this.timer);
+        this.addChild(this.timer);
 
         this.vfx = new GameEffects(this);
         this.addChild(this.vfx);
@@ -167,6 +188,7 @@ export class GameScreen extends Container {
     public reset() {
         this.shelf?.reset();
         this.match3.reset();
+        
     }
 
     /** Resize the screen, fired whenever window size changes */
@@ -174,16 +196,23 @@ export class GameScreen extends Container {
         const div = height * 0.3;
         const centerX = width * 0.5;
         const centerY = height * 0.5;
-
+        this.bg.width = width;
+        this.bg.height = height;
         this.gameContainer.x = centerX;
         this.gameContainer.y = div + this.match3.board.getHeight() * 0.5 + 20;
-        this.score.x = centerX;
-        this.score.y = 10;
+        this.score.x = width - 60;
+        this.score.y = 55;
+        this.scoreText.x = width - 60;
+        this.scoreText.y = 30
         this.comboMessage.x = centerX - 150;
         this.comboMessage.y = div - 50;
         this.comboLevel.x = centerX + 150;
         this.comboLevel.y = div - 50;
         this.cauldron.x = centerX;
+        this.timer.x = centerX
+        this.timer.y = 60
+        this.timeText.x = centerX
+        this.timeText.y = 30
         this.cauldron.y = div - 60;
         this.pauseButton.x = 30;
         this.pauseButton.y = 30;

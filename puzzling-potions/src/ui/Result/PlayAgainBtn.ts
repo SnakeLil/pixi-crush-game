@@ -1,13 +1,13 @@
 import { FancyButton } from '@pixi/ui';
 import { NineSliceSprite, Texture } from 'pixi.js';
-import { Label } from './Label';
+import { Label } from '../Label';
 import gsap from 'gsap';
-import { sfx } from '../utils/audio';
+import { sfx } from '../../utils/audio';
 
 const defaultLargeButtonOptions = {
     text: '',
-    width: 301,
-    height: 112,
+    width: 135.85,
+    height: 40,
 };
 
 type LargeButtonOptions = typeof defaultLargeButtonOptions;
@@ -15,41 +15,33 @@ type LargeButtonOptions = typeof defaultLargeButtonOptions;
 /**
  * The big rectangle button, with a label, idle and pressed states
  */
-export class LargeButton extends FancyButton {
+export class PlayAgainBtn extends FancyButton {
     /** The buttoon message displayed */
     private messageLabel: Label;
 
     constructor(options: Partial<LargeButtonOptions> = {}) {
         const opts = { ...defaultLargeButtonOptions, ...options };
-
-        const defaultView = new NineSliceSprite({
-            texture: Texture.from('button-large'),
-            leftWidth: 36,
-            topHeight: 42,
-            rightWidth: 36,
-            bottomHeight: 52,
+        const config = {
+            texture: Texture.from('btn-play-again'),
+            leftWidth: 0,
+            topHeight: 0,
+            rightWidth: 0,
+            bottomHeight: 0,
             width: opts.width,
             height: opts.height,
-        });
+        }
+        const defaultView = new NineSliceSprite(config);
 
-        const hoverView = new NineSliceSprite({
-            texture: Texture.from('button-large-hover'),
-            leftWidth: 36,
-            topHeight: 42,
-            rightWidth: 36,
-            bottomHeight: 52,
-            width: opts.width,
-            height: opts.height,
-        });
+        const hoverView = new NineSliceSprite(config);
 
         const pressedView = new NineSliceSprite({
-            texture: Texture.from('button-large-press'),
-            leftWidth: 36,
-            topHeight: 42,
-            rightWidth: 36,
-            bottomHeight: 52,
-            width: opts.width,
-            height: opts.height,
+            texture: Texture.from('btn-play-again'),
+            leftWidth: 0,
+            topHeight: 0,
+            rightWidth: 0,
+            bottomHeight: 0,
+            width: opts.width - 5,
+            height: opts.height - 5,
         });
 
         super({
@@ -64,12 +56,11 @@ export class LargeButton extends FancyButton {
             align: 'center',
         });
         this.messageLabel.y = -13;
-        this.addChild(this.messageLabel);
+        // this.addChild(this.messageLabel);
 
-        // this.onDown.connect(this.handleDown.bind(this));
+        this.onDown.connect(this.handleDown.bind(this));
         this.onUp.connect(this.handleUp.bind(this));
         this.onHover.connect(this.handleHover.bind(this));
-        // this.onPress.connect(this.handlePress.bind(this))
         this.on('pointerupoutside', this.handleUp.bind(this));
         this.on('pointerout', this.handleUp.bind(this));
     }
@@ -85,9 +76,6 @@ export class LargeButton extends FancyButton {
 
     private handleUp() {
         this.messageLabel.y = -13;
-    }
-    private handlePress() {
-        // this.onPress()
     }
 
     /** Show the component */

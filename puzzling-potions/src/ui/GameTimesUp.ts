@@ -28,7 +28,7 @@ export class GameTimesUp extends Container {
             height: 70,
             circleSize: 100,
         });
-        this.container.addChild(this.cloud);
+        // this.container.addChild(this.cloud);
 
         this.messageLabel = new Label(i18n.timesUp, {
             fill: 0xffffff,

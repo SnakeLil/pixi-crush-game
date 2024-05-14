@@ -36,9 +36,9 @@ export class GameScore extends Container {
             height: 20,
             circleSize: 50,
         });
-        this.container.addChild(this.cloud);
+        // this.container.addChild(this.cloud);
 
-        this.messageLabel = new Label('0', { fill: 0xffffff, fontSize: 30 });
+        this.messageLabel = new Label('0', { fill: 0xffffff, fontSize: 36 });
         this.messageLabel.y = 8;
         this.container.addChild(this.messageLabel);
         this.points = 0;
