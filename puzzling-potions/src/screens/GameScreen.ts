@@ -61,8 +61,14 @@ export class GameScreen extends Container {
     private bg: Sprite;
     private timeText: Label;
     private scoreText: Label;
+    private boxContainer: Sprite;
     constructor() {
         super();
+        this.boxContainer = new Sprite({
+            texture:Texture.from('game-container')
+          })
+          this.boxContainer.zIndex = 1
+         this.addChild(this.boxContainer)
         this.timeText = new Label('倒计时', {
             fontSize: 16,
             fill: 0xffffff,
@@ -98,7 +104,7 @@ export class GameScreen extends Container {
 
         this.gameContainer = new Container();
         this.addChild(this.gameContainer);
-
+        this.gameContainer.zIndex = 2
         this.shelf = new Shelf();
         this.gameContainer.addChild(this.shelf);
 
@@ -128,17 +134,19 @@ export class GameScreen extends Container {
 
         this.timer = new GameTimer();
         this.addChild(this.timer);
-
+        this.timer.zIndex = 4
         this.vfx = new GameEffects(this);
         this.addChild(this.vfx);
-
+        this.vfx.zIndex = 3
         this.countdown = new GameCountdown();
+        this.countdown.zIndex = 3
         this.addChild(this.countdown);
 
         this.overtime = new GameOvertime();
         this.addChild(this.overtime);
-
+        this.overtime.zIndex = 3
         this.timesUp = new GameTimesUp();
+        this.timesUp.zIndex = 3
         this.addChild(this.timesUp);
     }
 
@@ -149,7 +157,7 @@ export class GameScreen extends Container {
             columns: getUrlParamNumber('columns') ?? 7,
             tileSize: getUrlParamNumber('tileSize') ?? 50,
             freeMoves: getUrlParam('freeMoves') !== null,
-            duration: getUrlParamNumber('duration') ?? 60,
+            duration: getUrlParamNumber('duration') ?? 3,
             mode: (getUrlParam('mode') as Match3Mode) ?? userSettings.getGameMode(),
         });
 
@@ -224,6 +232,10 @@ export class GameScreen extends Container {
         this.timesUp.y = centerY;
         this.overtime.x = this.gameContainer.x;
         this.overtime.y = this.gameContainer.y;
+        this.boxContainer.x = this.gameContainer.x - this.gameContainer.width/2 -20
+        this.boxContainer.y = this.gameContainer.y - this.gameContainer.height/2 -15
+        this.boxContainer.width = this.gameContainer.width +40
+        this.boxContainer.height = this.gameContainer.height +35
     }
 
     /** Show screen with animations */

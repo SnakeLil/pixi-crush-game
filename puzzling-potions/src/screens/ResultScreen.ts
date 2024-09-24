@@ -92,7 +92,7 @@ export class ResultScreen extends Container {
     private goLotteryButton: GoLotteryBtn;
     // 再玩一次按钮
     private playAgainButton: PlayAgainBtn;
-    // private bg: Sprite;
+    private bg: Sprite;
     constructor() {
         super();
         // this.bg = new Sprite({
@@ -112,13 +112,15 @@ export class ResultScreen extends Container {
 
         this.panel = new Container();
         this.addChild(this.panel);
-
-        this.panelBase = Sprite.from('result-base');
+        this.bg = Sprite.from('hgf-result-bg')
+        this.bg.zIndex = 0
+        this.panelBase = Sprite.from('hgf-result-base');
         this.panelBase.anchor.set(0.5);
         this.panelBase.width = 380;
         this.panelBase.height = 280;
-        this.panel.addChild(this.panelBase);
 
+        this.panel.addChild(this.panelBase);
+        this.panel.addChild(this.bg);
         // 抽奖按钮
         this.goLotteryButton = new GoLotteryBtn({
             btnSrc: 'btn-go-lottery',
@@ -132,7 +134,6 @@ export class ResultScreen extends Container {
         this.title = new Label('', { fill: 0xffffff });
         this.title.y = -160;
         // this.panel.addChild(this.title);
-
         this.mode = new Label('', { fill: 0xffffff, fontSize: 12 });
         this.mode.y = -140;
         this.mode.alpha = 0.5;
@@ -229,7 +230,8 @@ export class ResultScreen extends Container {
         this.bottomBase.y = height - 100;
         this.settingsButton.x = width - 30;
         this.settingsButton.y = 30;
-       
+       this.bg.width = width
+       this.bg.height = height
     }
 
     /** Show screen with animations */

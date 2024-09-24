@@ -10,15 +10,15 @@ export type Match3Mode = (typeof match3ValidModes)[number];
  */
 const blocks: Record<Match3Mode | 'special', string[]> = {
     /** Test mode piece set */
-    test: ['piece-dragon', 'piece-frog', 'piece-newt'],
+    test: ['hgf-piece-dragon', 'hgf-piece-frog', 'hgf-piece-newt'],
     /** Easy mode piece set */
-    easy: ['piece-dragon', 'piece-frog', 'piece-newt', 'piece-snake'],
+    easy: ['hgf-piece-dragon', 'hgf-piece-frog', 'hgf-piece-newt', 'hgf-piece-snake'],
     /** Normal mode piece set */
-    normal: ['piece-dragon', 'piece-frog', 'piece-newt', 'piece-snake', 'piece-spider'],
+    normal: ['hgf-piece-dragon', 'hgf-piece-frog', 'hgf-piece-newt', 'hgf-piece-snake', 'hgf-piece-spider'],
     /** Hard mode piece set */
-    hard: ['piece-dragon', 'piece-frog', 'piece-newt', 'piece-snake', 'piece-spider', 'piece-yeti'],
+    hard: ['hgf-piece-dragon', 'hgf-piece-frog', 'hgf-piece-newt', 'hgf-piece-snake', 'hgf-piece-spider', 'hgf-piece-yeti'],
     /** Special types that will be added to the game regardless the mode */
-    special: ['special-blast', 'special-row', 'special-column', 'special-colour'],
+    special: ['hgf-special-blast', 'hgf-special-row', 'hgf-special-column', 'hgf-special-colour'],
 };
 
 /** Default match3 configuration */
